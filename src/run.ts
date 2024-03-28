@@ -2,19 +2,19 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import * as util from 'util'
-import * as fs from 'fs'
 
-import * as toolCache from '@actions/tool-cache'
 import * as core from '@actions/core'
+import * as toolCache from '@actions/tool-cache'
 
 const helmToolName = 'helm'
 const stableHelmVersion = 'v3.13.3'
 
 export async function run() {
-   let version = core.getInput('version', {required: true})
+   let version = core.getInput('version', { required: true })
 
    if (version !== 'latest' && version[0] !== 'v') {
       core.info('Getting latest Helm version')
@@ -24,7 +24,7 @@ export async function run() {
       version = await getLatestHelmVersion()
    }
 
-   const downloadBaseURL = core.getInput('downloadBaseURL', {required: false})
+   const downloadBaseURL = core.getInput('downloadBaseURL', { required: false })
 
    core.startGroup(`Downloading ${version}`)
    const cachedPath = await downloadHelm(downloadBaseURL, version)
@@ -91,8 +91,10 @@ export async function downloadHelm(
    if (!cachedToolpath) {
       let helmDownloadPath
       try {
+         const url = getHelmDownloadURL(baseURL, version)
+         core.info(`Downloading from the URL: ${url}`)
          helmDownloadPath = await toolCache.downloadTool(
-            getHelmDownloadURL(baseURL, version)
+            url
          )
       } catch (exception) {
          throw new Error(

@@ -1,9 +1,9 @@
-import * as run from './run'
-import * as os from 'os'
+import * as core from '@actions/core'
 import * as toolCache from '@actions/tool-cache'
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
-import * as core from '@actions/core'
+import * as run from './run'
 
 describe('run.ts', () => {
    const downloadBaseURL = 'https://test.tld'
@@ -120,7 +120,7 @@ describe('run.ts', () => {
       jest.spyOn(fs, 'statSync').mockImplementation((file) => {
          const isDirectory =
             (file as string).toLowerCase().indexOf('file') == -1 ? true : false
-         return {isDirectory: () => isDirectory} as fs.Stats
+         return { isDirectory: () => isDirectory } as fs.Stats
       })
 
       expect(run.walkSync('mainFolder', null, 'file21')).toEqual([
@@ -155,7 +155,7 @@ describe('run.ts', () => {
       jest.spyOn(fs, 'statSync').mockImplementation((file) => {
          const isDirectory =
             (file as string).toLowerCase().indexOf('file') == -1 ? true : false
-         return {isDirectory: () => isDirectory} as fs.Stats
+         return { isDirectory: () => isDirectory } as fs.Stats
       })
 
       expect(run.walkSync('mainFolder', null, 'helm.exe')).toEqual([])
@@ -164,7 +164,7 @@ describe('run.ts', () => {
    })
 
    test('findHelm() - change access permissions and find the helm in given directory', () => {
-      jest.spyOn(fs, 'chmodSync').mockImplementation(() => {})
+      jest.spyOn(fs, 'chmodSync').mockImplementation(() => { })
       jest.spyOn(fs, 'readdirSync').mockImplementation((file, _) => {
          if (file == 'mainFolder') return ['helm.exe' as unknown as fs.Dirent]
          return []
@@ -172,7 +172,7 @@ describe('run.ts', () => {
       jest.spyOn(fs, 'statSync').mockImplementation((file) => {
          const isDirectory =
             (file as string).indexOf('folder') == -1 ? false : true
-         return {isDirectory: () => isDirectory} as fs.Stats
+         return { isDirectory: () => isDirectory } as fs.Stats
       })
       jest.spyOn(os, 'platform').mockReturnValue('win32')
 
@@ -182,13 +182,13 @@ describe('run.ts', () => {
    })
 
    test('findHelm() - throw error if executable not found', () => {
-      jest.spyOn(fs, 'chmodSync').mockImplementation(() => {})
+      jest.spyOn(fs, 'chmodSync').mockImplementation(() => { })
       jest.spyOn(fs, 'readdirSync').mockImplementation((file, _) => {
          if (file == 'mainFolder') return []
          return []
       })
       jest.spyOn(fs, 'statSync').mockImplementation((file) => {
-         return {isDirectory: () => true} as fs.Stats
+         return { isDirectory: () => true } as fs.Stats
       })
       jest.spyOn(os, 'platform').mockReturnValue('win32')
 
@@ -200,10 +200,10 @@ describe('run.ts', () => {
    test('downloadHelm() - download helm and return path to it', async () => {
       jest.spyOn(toolCache, 'find').mockReturnValue('')
       jest.spyOn(toolCache, 'downloadTool').mockResolvedValue('pathToTool')
-      const response = JSON.stringify([{tag_name: 'v4.0.0'}])
+      const response = JSON.stringify([{ tag_name: 'v4.0.0' }])
       jest.spyOn(fs, 'readFileSync').mockReturnValue(response)
       jest.spyOn(os, 'platform').mockReturnValue('win32')
-      jest.spyOn(fs, 'chmodSync').mockImplementation(() => {})
+      jest.spyOn(fs, 'chmodSync').mockImplementation(() => { })
       jest.spyOn(toolCache, 'extractZip').mockResolvedValue('extractedPath')
       jest.spyOn(toolCache, 'cacheDir').mockResolvedValue('pathToCachedDir')
       jest
@@ -212,7 +212,7 @@ describe('run.ts', () => {
       jest.spyOn(fs, 'statSync').mockImplementation((file) => {
          const isDirectory =
             (file as string).indexOf('folder') == -1 ? false : true
-         return {isDirectory: () => isDirectory} as fs.Stats
+         return { isDirectory: () => isDirectory } as fs.Stats
       })
 
       expect(await run.downloadHelm(downloadBaseURL, 'v4.0.0')).toBe(
@@ -251,14 +251,14 @@ describe('run.ts', () => {
       jest.spyOn(toolCache, 'downloadTool').mockResolvedValue('pathToTool')
       jest.spyOn(toolCache, 'extractZip').mockResolvedValue('extractedPath')
       jest.spyOn(os, 'platform').mockReturnValue('win32')
-      jest.spyOn(fs, 'chmodSync').mockImplementation(() => {})
+      jest.spyOn(fs, 'chmodSync').mockImplementation(() => { })
       jest
          .spyOn(fs, 'readdirSync')
          .mockReturnValue(['helm.exe' as unknown as fs.Dirent])
       jest.spyOn(fs, 'statSync').mockImplementation((file) => {
          const isDirectory =
             (file as string).indexOf('folder') == -1 ? false : true
-         return {isDirectory: () => isDirectory} as fs.Stats
+         return { isDirectory: () => isDirectory } as fs.Stats
       })
 
       expect(await run.downloadHelm(downloadBaseURL, 'v3.2.1')).toBe(
@@ -283,7 +283,7 @@ describe('run.ts', () => {
       jest.spyOn(fs, 'statSync').mockImplementation((file) => {
          const isDirectory =
             (file as string).indexOf('folder') == -1 ? false : true
-         return {isDirectory: () => isDirectory} as fs.Stats
+         return { isDirectory: () => isDirectory } as fs.Stats
       })
 
       await expect(run.downloadHelm(downloadBaseURL, 'v3.2.1')).rejects.toThrow(
